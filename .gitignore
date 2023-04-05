@@ -1,0 +1,5 @@
+# Ignora archivos del sistema Mac 
+.DS_store
+
+# ignora el directorio que contiene los archivos HTML
+directorio
