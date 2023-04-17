@@ -2,6 +2,10 @@
 #include <string.h>
 #include "utils.h"
 
+/* `#define PATH_MAX 100` is defining a preprocessor macro named `PATH_MAX` with a value of 100. This
+macro is used to represent the maximum length of a file path on the system. By defining it as a
+macro, it can be used throughout the program to specify the size of character arrays used to store
+file paths. */
 #define PATH_MAX 100
 
 /* Programa principal */
