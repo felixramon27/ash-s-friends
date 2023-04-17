@@ -7,9 +7,6 @@
 #include <unistd.h>
 #include "utils.h"
 
-
-
-
 /* Funcion de lectura y evaluación de la entrada*/
 void abrirDirectorio(char *dirroot, int nivel, int *contador)
 {
@@ -26,7 +23,6 @@ void abrirDirectorio(char *dirroot, int nivel, int *contador)
     {
         printf("Error al abrir directorio.\n");
     }
-        int contarPoke = 1;
 
     while ((entrada = readdir(directorio)) != NULL)
     {
@@ -39,23 +35,27 @@ void abrirDirectorio(char *dirroot, int nivel, int *contador)
             /* Si el inodo es del tipo Regular File, entonces es un archivo */
             if (esArchivoRegular(nombre))
             {
-            printf("    File: %d %s\n", contarPoke , nombre );
-
                 *(contador) += 1;
-                contarPoke++;
-
 
                 /* Flag -l, para imprimir los nombres de los archivos */
-                if (atributosMostrar[1] == 1)
-                {
-                    printf("%d %s\n", *contador, entrada->d_name);
+                if (listar == 1 || mostrarTamArch == 1) {
+                    printf("FileNo: %d ", *contador);
+
+                    if (listar == 1) {
+                        printf("-- Nombre: %s ", entrada->d_name);   
+                    }
+
+                    if (mostrarTamArch == 1) {
+                        printf("-- Size: %d kb", tamanoArchivo(nombre));   
+                    }
+
+                    printf("\n");   
                 }
+                
             }
             /* Si el inodo es del tipo DIR, entonces es un directorio */
-            else if (isDirectory(nombre))
+            else if (esDirectorio(nombre))
             {
-            printf("Folder: %s %d\n", nombre, isDirectory(nombre) );
-
                 /* Aplicar los filtros del flag */
                 if (filtros[nivel] == NULL || strcmp(filtros[nivel], entrada->d_name) == 0)
                 {
@@ -67,30 +67,75 @@ void abrirDirectorio(char *dirroot, int nivel, int *contador)
 
     if (closedir(directorio) == -1)
     {
-        printf("Error closing directory.\n");
+        printf("Error al cerrar directorio.\n");
         /*FALTA: Exit */;
     }
 
     return;
 }
 
-void capturarFlag(char *argv[]) {
+int capturarFlag(char *argv[], int argc) {
+
     /*FALTA: Captar estos atributos mediante los flags */
+    int i = 1;
 
-    /* Se usa de prueba filtrando por region y tipo. Es NULL si no se aplico algun filtro */
-    char *region = NULL;
-    char *tipo = NULL;
-    char *frecuencia = NULL;
+    /* Aplicar opciones por defecto de impresion. 1 esta activo, 0 esta desactivada */
+    nocontar = 0; /* c o nocount */
+    listar = 0; /* l o list*/
+    mostrarTamArch = 0; /* size */
+    filtros[0], filtros[1], filtros[2] = NULL, NULL, NULL;
 
-    /* Aplicar filtros de busqueda*/
-    filtros[0] = region; /* -r */
-    filtros[1] = tipo; /* -s */
-    filtros[2] = frecuencia; /* -t */
+    while(i < argc) {
+        if  (strcmp(argv[i], "-r") == 0) {
+            if (filtros[0] != NULL) {
+                printf("Error, argumento de -r ya se habia asignado\n");
+                return 1;
+            }
 
-    /* Aplicar opciones de impresion */
-    atributosMostrar[0] = 0; /* c o nocount */
-    atributosMostrar[1] = 0; /* l o list*/
-    atributosMostrar[2] = 0; /* size */
+            i++;
+            if (i >= argc || argv[i][0] == '-' ) {
+            printf("Error en argumentos de -r\n");
+            return 1;
+            }
+
+            /* Almacenar la region */
+            filtros[0] = argv[i];     
+        } else if (strcmp(argv[i], "-s") == 0) {
+            i++;
+            if (filtros[1] != NULL || i >= argc || argv[i][0] == '-' ) {
+                printf("Error en argumentos de -s\n");
+                return 1;
+            }
+
+            /* Almacenar la especie */
+            filtros[1] = argv[i];
+        } else if (strcmp(argv[i], "-t") == 0) {
+            i++;
+            if (filtros[2] != NULL || i >= argc || argv[i][0] == '-' ) {
+                printf("Error en argumentos de -t\n");
+                return 1;
+            }
+
+            /* Almacenar el tipo de frecuencia */
+            filtros[2] = argv[i];
+        } else if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--nocount") == 0) {
+            /* Almacenar flag c */
+            nocontar = 1;
+        } else if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--list") == 0) {
+            /* Almacenar flag l */
+            listar = 1;
+        } else if (strcmp(argv[i], "--size") == 0) {
+            /* Almacenar flag size */
+            mostrarTamArch = 1;
+        } else {
+            printf("Error, flag no reconocido\n");
+            return 1;
+        }
+
+        i++;
+    }
+
+    return 0;
 }
 
 int esArchivoRegular(const char *path)
@@ -100,9 +145,21 @@ int esArchivoRegular(const char *path)
     return S_ISREG(path_stat.st_mode);
 }
 
-int isDirectory(const char *path) {
+int esDirectorio(const char *path) {
    struct stat statbuf;
    if (stat(path, &statbuf) != 0)
        return 0;
    return S_ISDIR(statbuf.st_mode);
+}
+
+int tamanoArchivo(char *filename) {
+    FILE *fichero;
+    long int tamano;
+
+    fichero=fopen(filename,"r");
+
+    fseek(fichero, 0L, SEEK_END);
+    tamano = ftell(fichero);
+    fclose(fichero);
+    return tamano/1024 + 1;
 }
