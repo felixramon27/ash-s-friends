@@ -74,9 +74,8 @@ void abrirDirectorio(char *dirroot, int nivel, int *contador)
     return;
 }
 
+/* Funcion que almacena los parametros obtenidos por los flags y verifica su correctitud */
 int capturarFlag(char *argv[], int argc) {
-
-    /*FALTA: Captar estos atributos mediante los flags */
     int i = 1;
 
     /* Aplicar opciones por defecto de impresion. 1 esta activo, 0 esta desactivada */
@@ -138,6 +137,7 @@ int capturarFlag(char *argv[], int argc) {
     return 0;
 }
 
+/* Funcion que verifica si un inodo es un archivo regular */
 int esArchivoRegular(const char *path)
 {
     struct stat path_stat;
@@ -145,6 +145,7 @@ int esArchivoRegular(const char *path)
     return S_ISREG(path_stat.st_mode);
 }
 
+/* Funcion que verifica si un inodo es un directorio */
 int esDirectorio(const char *path) {
    struct stat statbuf;
    if (stat(path, &statbuf) != 0)
@@ -152,6 +153,7 @@ int esDirectorio(const char *path) {
    return S_ISDIR(statbuf.st_mode);
 }
 
+/* Funcion que retorna el tamano de un archivo en KB */
 int tamanoArchivo(char *filename) {
     FILE *fichero;
     long int tamano;
