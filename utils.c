@@ -35,6 +35,13 @@ void abrirDirectorio(char *dirroot, int nivel, int *contador)
             /* Si el inodo es del tipo Regular File, entonces es un archivo */
             if (esArchivoRegular(nombre))
             {
+
+                if (name != NULL) {
+                    if (comienzaCon(entrada->d_name, name) == 0) {
+                        continue;
+                    }
+                }
+
                 *(contador) += 1;
 
                 /* Flag -l, para imprimir los nombres de los archivos */
@@ -83,6 +90,7 @@ int capturarFlag(char *argv[], int argc) {
     listar = 0; /* l o list*/
     mostrarTamArch = 0; /* size */
     filtros[0], filtros[1], filtros[2] = NULL, NULL, NULL;
+    name = NULL;
 
     while(i < argc) {
         if  (strcmp(argv[i], "-r") == 0) {
@@ -127,8 +135,12 @@ int capturarFlag(char *argv[], int argc) {
             /* Almacenar flag size */
             mostrarTamArch = 1;
         } else {
-            printf("Error, flag no reconocido\n");
-            return 1;
+            if (name != NULL || argv[i][0] == '-' ) {
+                printf("Error en argumentos\n");
+                return 1;
+            }
+
+            name = argv[i];
         }
 
         i++;
@@ -164,4 +176,10 @@ int tamanoArchivo(char *filename) {
     tamano = ftell(fichero);
     fclose(fichero);
     return tamano/1024 + 1;
+}
+
+int comienzaCon(const char *a, const char *b)
+{
+   if(strncmp(a, b, strlen(b)) == 0) return 1;
+   return 0;
 }

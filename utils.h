@@ -7,6 +7,7 @@ char *filtros[3];
 int nocontar; /* c o nocount */
 int listar; /* l o list*/
 int mostrarTamArch; /* size */
+char *name;
 
 /* Declaring functions*/
 void abrirDirectorio(char *dirroot, int nivel, int *contador);
