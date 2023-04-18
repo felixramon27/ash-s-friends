@@ -37,7 +37,7 @@ void abrirDirectorio(char *dirroot, int nivel, int *contador)
             {
 
                 if (name != NULL) {
-                    if (comienzaCon(entrada->d_name, name) == 0) {
+                    if (comienzaCon(entrada->d_name, nombreTarget) == 0) {
                         continue;
                     }
                 }
@@ -90,7 +90,7 @@ int capturarFlag(char *argv[], int argc) {
     listar = 0; /* l o list*/
     mostrarTamArch = 0; /* size */
     filtros[0], filtros[1], filtros[2] = NULL, NULL, NULL;
-    name = NULL;
+    nombreTarget = NULL;
 
     while(i < argc) {
         if  (strcmp(argv[i], "-r") == 0) {
