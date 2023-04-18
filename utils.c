@@ -179,6 +179,6 @@ int tamanoArchivo(char *filename) {
 
 int comienzaCon(const char *a, const char *b)
 {
-   if(strncmp(a, b, strlen(b)) == 0) return 1;
+   if(strstr(a, b)) return 1;
    return 0;
 }
