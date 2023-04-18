@@ -35,7 +35,6 @@ void abrirDirectorio(char *dirroot, int nivel, int *contador)
             /* Si el inodo es del tipo Regular File, entonces es un archivo */
             if (esArchivoRegular(nombre))
             {
-
                 if (name != NULL) {
                     if (comienzaCon(entrada->d_name, nombreTarget) == 0) {
                         continue;
