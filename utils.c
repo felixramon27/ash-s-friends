@@ -103,11 +103,12 @@ void abrirDirectorio(char *dirroot, int nivel, int *contador)
 
 /* Funcion que almacena los parametros obtenidos por los flags y verifica su correctitud */
 /**
- * The function captures a flag from the command line arguments.
+ * The function captures command line flags and their arguments for a program.
  * 
  * @param argv An array of strings containing the command line arguments passed to the program.
- * @param argc `argc` is an integer that represents the number of arguments passed to the program from
- * the command line, including the name of the program itself.
+ * @param argc The number of arguments passed to the program, including the name of the program itself.
+ * 
+ * @return an integer value, which is either 0 or 1.
  */
 int capturarFlag(char *argv[], int argc) {
     int i = 1;
