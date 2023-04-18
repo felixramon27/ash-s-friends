@@ -49,15 +49,21 @@ void abrirDirectorio(char *dirroot, int nivel, int *contador)
 
     while ((entrada = readdir(directorio)) != NULL)
     {
-        char nombre[sizeof(entrada->d_name) + sizeof(dirroot) + 1];
-        sprintf(nombre, "%s/%s", dirroot, entrada->d_name);
+        char dir[sizeof(entrada->d_name) + sizeof(dirroot) + 1];
+        sprintf(dir, "%s/%s", dirroot, entrada->d_name);
         
         if ((strcmp(entrada->d_name, ".") != 0) && (strcmp(entrada->d_name, "..") != 0))
         {
 
             /* Si el inodo es del tipo Regular File, entonces es un archivo */
-            if (esArchivoRegular(nombre))
+            if (esArchivoRegular(dir))
             {
+                if (nombreTarget != NULL) {
+                    if (comienzaCon(entrada->d_name, nombreTarget) == 0) {
+                        continue;
+                    }
+                }
+
                 *(contador) += 1;
 
                 /* Flag -l, para imprimir los nombres de los archivos */
@@ -69,7 +75,7 @@ void abrirDirectorio(char *dirroot, int nivel, int *contador)
                     }
 
                     if (mostrarTamArch == 1) {
-                        printf("-- Size: %d kb", tamanoArchivo(nombre));   
+                        printf("-- Size: %d kb", tamanoArchivo(dir));   
                     }
 
                     printf("\n");   
@@ -77,12 +83,12 @@ void abrirDirectorio(char *dirroot, int nivel, int *contador)
                 
             }
             /* Si el inodo es del tipo DIR, entonces es un directorio */
-            else if (esDirectorio(nombre))
+            else if (esDirectorio(dir))
             {
                 /* Aplicar los filtros del flag */
                 if (filtros[nivel] == NULL || strcmp(filtros[nivel], entrada->d_name) == 0)
                 {
-                    abrirDirectorio(nombre, nivel + 1, contador);
+                    abrirDirectorio(dir, nivel + 1, contador);
                 }
             }
         }
@@ -118,6 +124,7 @@ int capturarFlag(char *argv[], int argc) {
     listar = 0; /* l o list*/
     mostrarTamArch = 0; /* size */
     filtros[0], filtros[1], filtros[2] = NULL, NULL, NULL;
+    nombreTarget = NULL;
 
     while(i < argc) {
         if  (strcmp(argv[i], "-r") == 0) {
@@ -162,8 +169,12 @@ int capturarFlag(char *argv[], int argc) {
             /* Almacenar flag size */
             mostrarTamArch = 1;
         } else {
-            printf("Error, flag no reconocido\n");
-            return 1;
+            if (nombreTarget != NULL || argv[i][0] == '-' ) {
+                printf("Error en argumentos\n");
+                return 1;
+            }
+
+            nombreTarget = argv[i];
         }
 
         i++;
@@ -222,4 +233,10 @@ int tamanoArchivo(char *filename) {
     tamano = ftell(fichero);
     fclose(fichero);
     return tamano/1024 + 1;
+}
+
+int comienzaCon(const char *a, const char *b)
+{
+   if(strncmp(a, b, strlen(b)) == 0) return 1;
+   return 0;
 }

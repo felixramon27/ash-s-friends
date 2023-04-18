@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "utils.h"
 
 /* `#define PATH_MAX 100` is defining a preprocessor macro named `PATH_MAX` with a value of 100. This

@@ -1,5 +1,10 @@
 # Ignora archivos del sistema Mac 
 .DS_store
+.vscode
 
 # ignora el directorio que contiene los archivos HTML
 directorio
+
+# ignora todos los .o
+*.o
+fameChecker
