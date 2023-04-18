@@ -14,7 +14,6 @@ int capturarFlag(char *argv[], int argc);
 int esArchivoRegular(const char *path);
 int esDirectorio(const char *path);
 int tamanoArchivo(char *filename);
-int esDirectorio(const char *path);
 int comienzaCon(const char *a, const char *b);
 
 #endif
