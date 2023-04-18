@@ -235,6 +235,17 @@ int tamanoArchivo(char *filename) {
     return tamano/1024 + 1;
 }
 
+/**
+ * The function checks if a string starts with another string.
+ * 
+ * @param a a is a pointer to a character array (string) that represents the main string we want to
+ * check if it begins with another string.
+ * @param b The parameter "b" is a pointer to a constant character string that represents the prefix we
+ * want to check for in the string "a".
+ * 
+ * @return The function `comienzaCon` returns an integer value of 1 if the string `a` starts with the
+ * string `b`, and 0 otherwise.
+ */
 int comienzaCon(const char *a, const char *b)
 {
    if(strncmp(a, b, strlen(b)) == 0) return 1;
